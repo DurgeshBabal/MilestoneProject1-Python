@@ -60,9 +60,8 @@ def modify_board(x_coordinate, y_coordinate, current_player):
 
 def win_check():
 
-    loop_var_i, loop_var_j, win_length = 0
-
     # Horizontal check
+    loop_var_i, loop_var_j, win_length = 0, 0, 0
     while loop_var_i < ROW_NUMBER:
         loop_var_j = 0
         current_element = input_board[loop_var_i][loop_var_j]
@@ -82,9 +81,12 @@ def win_check():
             if win_length == WIN_LENGTH:
                 return True
 
+            loop_var_j += 1
+
         loop_var_i += 1
 
     # Vertical check
+    loop_var_i, loop_var_j, win_length = 0, 0, 0
     while loop_var_j < COLUMN_NUMBER:
         loop_var_i = 0
         current_element = input_board[loop_var_i][loop_var_j]
@@ -109,7 +111,105 @@ def win_check():
         loop_var_j += 1
 
     # Top -> Bottom Right Diagonal check
+    row_times = ROW_NUMBER - WIN_LENGTH
+    col_times = COLUMN_NUMBER - WIN_LENGTH
 
+    loop_var_i, loop_var_j, win_length = 0, 0, 0
+    while loop_var_i <= row_times:
+        loop_var_j = 0
+        current_element = input_board[loop_var_i][loop_var_j]
+
+        while loop_var_i + loop_var_j < ROW_NUMBER and loop_var_j < COLUMN_NUMBER:
+            board_unit = input_board[loop_var_i + loop_var_j][loop_var_j]
+
+            if board_unit == 'Z':
+                win_length = 0
+                continue
+            elif board_unit == current_element:
+                win_length += 1
+            else:
+                win_length = 0
+                current_element = board_unit
+
+            if win_length == WIN_LENGTH:
+                return True
+
+            loop_var_j += 1
+
+        loop_var_i += 1
+
+    loop_var_i, loop_var_j, win_length = 0, 1, 0
+    while loop_var_j < col_times:
+        loop_var_i = 0
+        current_element = input_board[loop_var_i][loop_var_j]
+
+        while loop_var_j + loop_var_i < ROW_NUMBER and loop_var_i < COLUMN_NUMBER:
+            board_unit = input_board[loop_var_j + loop_var_i][loop_var_i]
+
+            if board_unit == 'Z':
+                win_length = 0
+                continue
+            elif board_unit == current_element:
+                win_length += 1
+            else:
+                win_length = 0
+                current_element = board_unit
+
+            if win_length == WIN_LENGTH:
+                return True
+
+            loop_var_i += 1
+
+        loop_var_j += 1
+
+    # Top -> Bottom Left Diagonal check
+    loop_var_i, loop_var_j, win_length = 0, COLUMN_NUMBER - col_times - 1, 0
+    while loop_var_j < COLUMN_NUMBER:
+        loop_var_i = 0
+        current_element = input_board[loop_var_i][loop_var_j]
+
+        while loop_var_i < ROW_NUMBER and loop_var_j - loop_var_i >= 0:
+            board_unit = input_board[loop_var_i][loop_var_j - loop_var_i]
+
+            if board_unit == 'Z':
+                win_length = 0
+                continue
+            elif board_unit == current_element:
+                win_length += 1
+            else:
+                win_length = 0
+                current_element = board_unit
+
+            if win_length == WIN_LENGTH:
+                return True
+
+            loop_var_i += 1
+
+        loop_var_j += 1
+
+    loop_var_i, loop_var_j, win_length = 1, COLUMN_NUMBER - 1, 0
+    while loop_var_i <= row_times:
+        loop_var_j = COLUMN_NUMBER - 1
+        current_element = input_board[loop_var_i][loop_var_j]
+
+        while loop_var_i < ROW_NUMBER and loop_var_j >= 0:
+            board_unit = input_board[loop_var_i][loop_var_j]
+
+            if board_unit == 'Z':
+                win_length = 0
+                continue
+            elif board_unit == current_element:
+                win_length += 1
+            else:
+                win_length = 0
+                current_element = board_unit
+
+            if win_length == WIN_LENGTH:
+                return True
+
+            loop_var_j -= 1
+
+        loop_var_i += 1
 
 
 def gameplay():
@@ -120,7 +220,8 @@ def gameplay():
 
     while True:
         print_board()
-        current_player = current_player % 3
+        if current_player == 3:
+            current_player -= 2
 
         print(f"Player {current_player}'s turn:")
         x_coordinate = int(input("Enter the row number: "))
